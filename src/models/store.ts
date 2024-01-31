@@ -1,5 +1,5 @@
 import { Store as MedusaStore } from '@medusajs/medusa';
-import { Entity, JoinColumn, OneToMany } from 'typeorm';
+import { Entity, JoinColumn, OneToMany, ManyToMany, BeforeInsert } from 'typeorm';
 import { Order } from './order';
 import { Product } from './product';
 import { Role } from './role';
@@ -10,8 +10,9 @@ export class Store extends MedusaStore {
   @OneToMany(() => User, (user) => user?.store)
   members?: User[];
 
-  @OneToMany(() => Product, (product) => product?.store)
-  products?: Product[];
+  
+  @ManyToMany(() => Product, product => product.store)
+  products: Product[];
 
   @OneToMany(() => Order, (order) => order?.store)
   orders?: Order[];
@@ -19,4 +20,5 @@ export class Store extends MedusaStore {
   @OneToMany(() => Role, (role) => role.store)
   @JoinColumn({ name: 'id', referencedColumnName: 'store_id' })
   roles: Role[];
+  
 }

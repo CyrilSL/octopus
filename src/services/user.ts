@@ -2,6 +2,10 @@ import { Lifetime } from "awilix"
 import { UserService as MedusaUserService } from "@medusajs/medusa"
 import { User } from "../models/user"
 import { CreateUserInput as MedusaCreateUserInput } from "@medusajs/medusa/dist/types/user"
+import { 
+  UpdateUserInput,
+} from "@medusajs/medusa/dist/types/user"
+
 import StoreRepository from "../repositories/store"
 
 type CreateUserInput = {
@@ -34,6 +38,12 @@ class UserService extends MedusaUserService {
     }
 
     return await super.create(user, password)
+  }
+
+  async update(userId: string, update: UpdateUserInput & {
+    role_id?: string
+  }): Promise<User> {
+    return super.update(userId, update)
   }
 }
 

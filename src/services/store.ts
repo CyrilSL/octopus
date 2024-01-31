@@ -27,16 +27,19 @@ class StoreService extends MedusaStoreService {
     return this.retrieveForLoggedInUser(config);
   }
 
-  async retrieveForLoggedInUser (config?: FindConfig<Store>) {
+  async retrieveForLoggedInUser(config?: FindConfig<Store>) {
     const storeRepo = this.manager_.withRepository(this.storeRepository_);
-    const store = await storeRepo.findOne({
+
+    // Ensure that the config object and its relations property are defined
+    const effectiveConfig = {
         ...config,
-        relations: [
-          ...config.relations,
-          'members'
-        ],
+        relations: config && config.relations ? [...config.relations, 'members'] : ['members']
+    };
+
+    const store = await storeRepo.findOne({
+        ...effectiveConfig,
         where: {
-          id: this.loggedInUser_.store_id
+            id: this.loggedInUser_.store_id
         },
     });
 
@@ -44,8 +47,9 @@ class StoreService extends MedusaStoreService {
         throw new Error('Unable to find the user store');
     }
 
-    return store
-  }
+    return store;
+}
+
 }
 
 export default StoreService

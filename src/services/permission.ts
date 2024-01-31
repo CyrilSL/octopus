@@ -1,34 +1,38 @@
-import { TransactionBaseService } from '@medusajs/medusa';
-import { Permission } from '../models/permission';
-import PermissionRepository from '../repositories/permission';
+import { TransactionBaseService } from "@medusajs/medusa"
+import { Permission } from "../models/permission"
+import PermissionRepository from "../repositories/permission"  
 
-export type CreatePayload = Pick<Permission, 'name' | 'metadata'>;
+export type CreatePayload = Pick<
+  Permission,
+  "name" | "metadata"
+>
 
 type InjectedDependencies = {
-  permissionRepository: typeof PermissionRepository;
-};
+  permissionRepository: typeof PermissionRepository
+}
 
 class PermissionService extends TransactionBaseService {
-  protected readonly permissionRepository_: typeof PermissionRepository;
-
+  protected readonly permissionRepository_:
+    typeof PermissionRepository
+  
   constructor(container: InjectedDependencies) {
-    super(container);
-    this.permissionRepository_ = container.permissionRepository;
+    super(container)
+    this.permissionRepository_ = container.permissionRepository
   }
 
-  // TODO: add validation
   async create(data: CreatePayload) {
     // omitting validation for simplicity
     return this.atomicPhase_(async (manager) => {
-      const permissionRepo = manager.withRepository(this.permissionRepository_);
+      const permissionRepo = manager.withRepository(
+        this.permissionRepository_
+      )
+      const permission = permissionRepo.create(data)
 
-      const permission = permissionRepo.create(data);
+      const result = await permissionRepo.save(permission)
 
-      const result = await permissionRepo.save(permission);
-
-      return result;
-    });
+      return result
+    })
   }
 }
 
-export default PermissionService;
+export default PermissionService
