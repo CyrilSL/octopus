@@ -46,9 +46,18 @@ const plugins = [
     resolve: "@medusajs/admin",
     /** @type {import('@medusajs/admin').PluginOptions} */
     options: {
+      serve: true,
       autoRebuild: true,
+      backend: "http://localhost:9001",
+      path: "/app",
+      outDir: "build",
       develop: {
-        open: process.env.OPEN_BROWSER !== "false",
+        open: true,
+        port: 7001,
+        logLevel: "error",
+        stats: "normal",
+        allowedHosts: "auto",
+        webSocketURL: undefined,
       },
     },
   },

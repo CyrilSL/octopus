@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { RouteConfig } from "@medusajs/admin";
-import { useAdminProducts, useAdminGetSession } from "medusa-react";
+import { useAdminProducts, useAdminGetSession, useAdminCustomQuery, useAdminCustomPost } from "medusa-react";
 import { Checkbox, Label, Table, Heading, Button, Container } from "@medusajs/ui";
 
 const AddProducts = () => {
@@ -14,59 +14,41 @@ const AddProducts = () => {
 
   const triggerRefresh = () => setRefreshCounter(c => c + 1);
 
-  useEffect(() => {
-    const fetchMiniStoreProducts = async () => {
-      try {
-        const response = await fetch(`http://localhost:9000/admin/fetch_products/${user.store_id}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidXNyXzAxSEtWQlJOWjg5UVlESzZaV0NEWEpCQjI4IiwiZG9tYWluIjoiYWRtaW4iLCJpYXQiOjE3MDY1MzQyMDAsImV4cCI6MTcwNjYyMDYwMH0.4jgDYVGdcatNC_DGL6iTBqsiraYQ8SOTiwedaq_AqGI' // Replace <YOUR_TOKEN_HERE> with the actual token
-          },
-        });
+  // Adjusted to use useAdminCustomQuery
+  const {
+    data: miniStoreProductsData,
+    isLoading: isMiniStoreProductsLoading,
+    isError: isMiniStoreProductsError
+  } = useAdminCustomQuery(
+    user?.store_id ? `/admin/fetch_products/${user.store_id}` : null, // Conditional endpoint based on user.store_id
+    [`fetchMiniStoreProducts`, user?.store_id, refreshCounter], // Ensuring unique key + refetch on user or refreshCounter change
+  );
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch mini store products');
-        }
-
-        const data = await response.json();
-        console.log("Mini Store Products = "+data.products);
-        console.log("Admin all products = "+products)
-        console.log("isProductLoading = "+isProductsLoading)
-        
-        setMiniStoreProducts(data.products); // Assuming the response contains a products array
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    if (user?.store_id) {
-      fetchMiniStoreProducts();
-    }
-  }, [user?.store_id, products, refreshCounter]);
-
+  const customPost = useAdminCustomPost(
+    '/admin/add_products',
+    ["addProducts"] // The queryKey can be any unique string that makes sense for your use case
+  );
   
 
   useEffect(() => {
-    if (!isProductsLoading && !isUserLoading && miniStoreProducts.length > 0) {
-      // Filter out products that are already in the mini store.
-      // This assumes miniStoreProducts is an array of product IDs or has a property that can be used to identify them uniquely.
+    if (!isProductsLoading && !isUserLoading && !isMiniStoreProductsLoading && !isMiniStoreProductsError) {
+      const miniStoreProducts = miniStoreProductsData?.products || [];
       const filteredProducts = products.filter(product => 
         !miniStoreProducts.some(miniProduct => miniProduct.id === product.id)
       );
       setAvailableProducts(filteredProducts);
     }
-  }, [products, miniStoreProducts, isProductsLoading, isUserLoading]);
-  
+  }, [products, miniStoreProductsData, isProductsLoading, isUserLoading, isMiniStoreProductsLoading, isMiniStoreProductsError]);
 
 
 
   const handleCheckboxChange = (productId) => {
-    setSelectedProducts(currentSelectedProducts => {
-      if (currentSelectedProducts.includes(productId)) {
-        return currentSelectedProducts.filter(id => id !== productId);
+    setSelectedProducts(current => {
+      const isCurrentlySelected = current.includes(productId);
+      if (isCurrentlySelected) {
+        return current.filter(id => id !== productId);
       } else {
-        return [...currentSelectedProducts, productId];
+        return [...current, productId];
       }
     });
   };
@@ -77,38 +59,23 @@ const AddProducts = () => {
     console.log("Selected Products are these bruv:", selectedProducts);
     console.log("User's Store ID is :", user.store_id); // Log the logged-in user's details
 
-    // Prepare the data for sending
     const data = {
       storeId: user.store_id,
       productIds: selectedProducts
     };
 
-    console.log('utton press');
-    try {
-      const response = await fetch('http://localhost:9000/admin/add_products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidXNyXzAxSEtWQlJOWjg5UVlESzZaV0NEWEpCQjI4IiwiZG9tYWluIjoiYWRtaW4iLCJpYXQiOjE3MDY1MzQyMDAsImV4cCI6MTcwNjYyMDYwMH0.4jgDYVGdcatNC_DGL6iTBqsiraYQ8SOTiwedaq_AqGI' // Replace <YOUR_TOKEN_HERE> with the actual token
-        },
-        body: JSON.stringify(data)
-      });
-
-      if (!response.ok) {
-        const errorDetails = await response.text(); // or response.json() if the server sends JSON response
-        throw new Error(`Network response was not ok: ${errorDetails}`);
+    customPost.mutate(data, {
+      onSuccess: (response) => {
+        console.log('Successfully added products:', response);
+        setSelectedProducts([]);
+        triggerRefresh(); // Refresh the list of products
+        // Optionally, handle any follow-up actions here, such as displaying a success message
+      },
+      onError: (error) => {
+        console.error('Failed to add products:', error);
+        // Optionally, handle errors, such as displaying error messages
       }
-
-
-
-      const responseData = await response.json();
-      console.log('Successfully added products:', responseData);
-      triggerRefresh(); // Instead of setRefresh(prev => !prev);
-      // Handle success response
-    } catch (error) {
-      console.error('Failed to add products:', error);
-      // Handle error case
-    }
+    });
   };
 
   if (isUserLoading || isProductsLoading) {
@@ -138,21 +105,21 @@ const AddProducts = () => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {availableProducts.map((product) => (
-            <Table.Row key={product.id}>
-              <Table.Cell>
-                <Checkbox 
-                  id={`product-${product.id}`} 
-                  checked={selectedProducts.includes(product.id)}
-                  onCheckedChange={() => handleCheckboxChange(product.id)}
-                />
-              </Table.Cell>
-              <Table.Cell>
-                <Label htmlFor={`product-${product.id}`}>{product.title}</Label>
-              </Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
+  {availableProducts.map((product) => (
+    <Table.Row key={product.id}>
+      <Table.Cell>
+        <Checkbox 
+          id={`product-${product.id}`} 
+          checked={selectedProducts.includes(product.id)}
+          onCheckedChange={() => handleCheckboxChange(product.id)}
+        />
+      </Table.Cell>
+      <Table.Cell>
+        <Label htmlFor={`product-${product.id}`}>{product.title}</Label>
+      </Table.Cell>
+    </Table.Row>
+  ))}
+</Table.Body>
       </Table>
     </Container>
   );

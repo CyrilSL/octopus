@@ -1,36 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { useAdminGetSession } from "medusa-react";
+import { useAdminGetSession, useAdminCustomQuery, useAdminCustomDelete } from "medusa-react";
 import { Checkbox, Label, Table, Heading, Button, Container } from "@medusajs/ui";
 import { RouteConfig } from "@medusajs/admin";
 
 const RemoveProducts = () => {
   const { user, isLoading: isUserLoading } = useAdminGetSession();
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [miniStoreProducts, setMiniStoreProducts] = useState([]);
   const [refresh, setRefresh] = useState(false);
 
-  useEffect(() => {
-    const fetchMiniStoreProducts = async () => {
-      const response = await fetch(`http://localhost:9000/admin/fetch_products/${user.store_id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidXNyXzAxSEtWQlJOWjg5UVlESzZaV0NEWEpCQjI4IiwiZG9tYWluIjoiYWRtaW4iLCJpYXQiOjE3MDY1MzQyMDAsImV4cCI6MTcwNjYyMDYwMH0.4jgDYVGdcatNC_DGL6iTBqsiraYQ8SOTiwedaq_AqGI' // Update with actual token
-        },
-      });
+  const { data: miniStoreProductsData, isLoading: isLoadingMiniStoreProducts } = useAdminCustomQuery(
+    user?.store_id ? `/admin/fetch_products/${user.store_id}` : null,
+    [`miniStoreProducts`, user?.store_id],
+  );
+  const miniStoreProducts = miniStoreProductsData?.products || [];
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch mini store products');
-      }
+  // Construct the URL with query parameters
+  const constructDeleteUrl = () => {
+    const queryParams = new URLSearchParams({
+      storeId: user.store_id,
+      productIds: selectedProducts.join(','),
+    }).toString();
+    return `/admin/remove_products?${queryParams}`;
+  };
 
-      const data = await response.json();
-      setMiniStoreProducts(data.products);
-    };
-
-    if (user?.store_id) {
-      fetchMiniStoreProducts();
-    }
-  }, [user?.store_id, refresh]);
+  const customDelete = useAdminCustomDelete(
+    constructDeleteUrl(), // This function will construct the URL dynamically
+    [`miniStoreProducts`, user?.store_id]
+  );
 
   const handleCheckboxChange = (productId) => {
     setSelectedProducts(current => {
@@ -43,33 +39,32 @@ const RemoveProducts = () => {
     });
   };
 
-  const handleSubmit = async () => {
-    console.log("selected products = ",selectedProducts)
-    const response = await fetch('http://localhost:9000/admin/remove_products', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidXNyXzAxSEtWQlJOWjg5UVlESzZaV0NEWEpCQjI4IiwiZG9tYWluIjoiYWRtaW4iLCJpYXQiOjE3MDY1MzQyMDAsImV4cCI6MTcwNjYyMDYwMH0.4jgDYVGdcatNC_DGL6iTBqsiraYQ8SOTiwedaq_AqGI' // Update with actual token
+  const handleSubmit = () => {
+    // Use mutate for deletion with onSuccess callback for cache invalidation and UI feedback
+    customDelete.mutate(void 0, {
+      onSuccess: () => {
+        // Optionally, handle success state, e.g., showing a success message
+        console.log('Products removed successfully');
+        setSelectedProducts([]); // Clear selection after successful deletion
       },
-      body: JSON.stringify({
-        storeId: user.store_id,
-        productIds: selectedProducts,
-      }),
+      onError: (error) => {
+        // Optionally, handle error state, e.g., showing an error message
+        console.error('Failed to remove products:', error);
+      }
     });
-
-    if (!response.ok) {
-      // Handle error
-      console.error('Failed to remove products');
-      return;
-    }
-
-    // Clear selection and trigger refresh
-    setSelectedProducts([]);
-    setRefresh(prev => !prev);
   };
-
   if (isUserLoading) {
     return <span>Loading...</span>;
+  }
+
+  if (miniStoreProducts.length === 0) {
+    return (
+      <Container>
+        <div className='px-xlarge py-large'>
+          <Heading>No Products in your store yet!</Heading>
+        </div>
+      </Container>
+    );
   }
 
   return (
