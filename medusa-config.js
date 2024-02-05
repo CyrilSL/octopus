@@ -16,9 +16,6 @@ switch (process.env.NODE_ENV) {
     ENV_FILE_NAME = ".env";
     break;
 }
-
-
-
 try {
   dotenv.config({ path: process.cwd() + "/" + ENV_FILE_NAME });
 } catch (e) {}
