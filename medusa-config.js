@@ -96,7 +96,10 @@ module.exports = {
           rejectUnauthorized: false,
         },
       } : {},
-  projectConfig,
+  projectConfig:{
+    jwt_secret: process.env.JWT_SECRET ||
+      "supersecret",
+  },
   plugins,
   modules,
 };
