@@ -88,8 +88,6 @@ const projectConfig = {
    redis_url: REDIS_URL
 };
 
-
-
 /** @type {import('@medusajs/medusa').ConfigModule} */
 module.exports = {
   database_extra: process.env.NODE_ENV !== "development" ?
