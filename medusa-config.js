@@ -51,7 +51,7 @@ const plugins = [
       path: "/app",
       outDir: "build",
       develop: {
-        open: true,
+        open: process.env.OPEN_BROWSER !== "false",
         port: 7001,
         logLevel: "error",
         stats: "normal",
@@ -72,8 +72,7 @@ const modules = {
   cacheService: {
     resolve: "@medusajs/cache-redis",
     options: {
-      redisUrl: REDIS_URL,
-      ttl: 30,
+      redisUrl: REDIS_URL
     }
   },
 };
