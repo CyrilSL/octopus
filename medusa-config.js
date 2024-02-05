@@ -101,5 +101,13 @@ module.exports = {
       "supersecret",
   },
   plugins,
-  modules,
+  modules: {
+    cacheService: {
+      resolve: "@medusajs/cache-redis",
+      options: { 
+        redisUrl: process.env.CACHE_REDIS_URL,
+        ttl: 30,
+      },
+    },
+  },
 };
