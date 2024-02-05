@@ -46,8 +46,7 @@ const plugins = [
     resolve: "@medusajs/admin",
     /** @type {import('@medusajs/admin').PluginOptions} */
     options: {
-      // serve: process.env.NODE_ENV === "development",
-      serve:true,
+      serve: process.env.NODE_ENV === "development",
       autoRebuild: true,
       path: "/app",
       outDir: "build",
