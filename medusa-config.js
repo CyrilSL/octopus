@@ -46,24 +46,16 @@ const plugins = [
     resolve: "@medusajs/admin",
     /** @type {import('@medusajs/admin').PluginOptions} */
     options: {
-      serve: process.env.NODE_ENV === "development",
       autoRebuild: true,
-      path: "/app",
-      outDir: "build",
       develop: {
         open: process.env.OPEN_BROWSER !== "false",
-        port: 7001,
-        logLevel: "error",
-        stats: "normal",
-        allowedHosts: "auto",
-        webSocketURL: undefined,
       },
     },
   },
 ];
 
 const modules = {
-  eventBus: {
+  /*eventBus: {
     resolve: "@medusajs/event-bus-redis",
     options: {
       redisUrl: REDIS_URL
@@ -74,7 +66,7 @@ const modules = {
     options: {
       redisUrl: REDIS_URL
     }
-  },
+  },*/
 };
 
 /** @type {import('@medusajs/medusa').ConfigModule["projectConfig"]} */
@@ -85,30 +77,12 @@ const projectConfig = {
   database_url: DATABASE_URL,
   admin_cors: ADMIN_CORS,
   // Uncomment the following lines to enable REDIS
-   redis_url: REDIS_URL
+  // redis_url: REDIS_URL
 };
 
 /** @type {import('@medusajs/medusa').ConfigModule} */
 module.exports = {
-  database_extra: process.env.NODE_ENV !== "development" ?
-      {
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      } : {},
-  projectConfig:{
-    jwt_secret: process.env.JWT_SECRET ||
-      "supersecret",
-  },
+  projectConfig,
   plugins,
-  modules: {
-    cacheService: {
-      resolve: "@medusajs/cache-redis",
-      options: { 
-        redisUrl: process.env.CACHE_REDIS_URL,
-        ttl: 30,
-      },
-    },
-  },
+  modules,
 };
-
