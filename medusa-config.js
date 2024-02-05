@@ -49,7 +49,7 @@ const plugins = [
     /** @type {import('@medusajs/admin').PluginOptions} */
     options: {
       serve: process.env.NODE_ENV === "development",
-      autoRebuild: true,
+      // autoRebuild: true,
       develop: {
         open: process.env.OPEN_BROWSER !== "false",
       },
@@ -85,7 +85,14 @@ const projectConfig = {
 
 /** @type {import('@medusajs/medusa').ConfigModule} */
 module.exports = {
-  projectConfig,
+  projectConfig:{
+    database_extra: process.env.NODE_ENV !== "development" ?
+      {
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      } : {},
+  },
   plugins,
   modules,
 };
