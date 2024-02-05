@@ -48,7 +48,6 @@ const plugins = [
     options: {
       serve: true,
       autoRebuild: true,
-      backend: "http://localhost:9001",
       path: "/app",
       outDir: "build",
       develop: {
@@ -64,18 +63,18 @@ const plugins = [
 ];
 
 const modules = {
-  /*eventBus: {
+  eventBus: {
     resolve: "@medusajs/event-bus-redis",
     options: {
       redisUrl: REDIS_URL
     }
   },
-  cacheService: {
-    resolve: "@medusajs/cache-redis",
-    options: {
-      redisUrl: REDIS_URL
-    }
-  },*/
+  // cacheService: {
+  //   resolve: "@medusajs/cache-redis",
+  //   options: {
+  //     redisUrl: REDIS_URL
+  //   }
+  // },
 };
 
 /** @type {import('@medusajs/medusa').ConfigModule["projectConfig"]} */
