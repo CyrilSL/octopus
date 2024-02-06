@@ -21,7 +21,8 @@ try {
 } catch (e) {}
 
 // CORS when consuming Medusa from admin
-const ADMIN_CORS =  process.env.ADMIN_CORS;
+const ADMIN_CORS = "https://octopus-dashboard.vercel.app";
+
 // CORS to avoid issues when consuming Medusa from a client
 const STORE_CORS = process.env.STORE_CORS || "http://localhost:8000";
 
@@ -47,7 +48,7 @@ const plugins = [
       // you may need to add the NODE_ENV variable
       // manually
       serve: process.env.NODE_ENV === "development",
-      backend: "http://localhost:9001",
+      backend: "https://octopus-production-47ec.up.railway.app",
       develop: {
         open: process.env.OPEN_BROWSER !== "false",
       },
