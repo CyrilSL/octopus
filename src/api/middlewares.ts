@@ -76,7 +76,7 @@ export const permissions = async (
 
 
 const corsOptions = {
-  origin: process.env.MEDUSA_ADMIN_BACKEND_URL || 'http://localhost:7001' || process.env.STORE_CORS,
+  origin: process.env.MEDUSA_ADMIN_BACKEND_URL || 'http://localhost:7001' || process.env.ADMIN_CORS,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204,
