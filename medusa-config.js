@@ -49,7 +49,7 @@ const plugins = [
       // you may need to add the NODE_ENV variable
       // manually
       serve: process.env.NODE_ENV === "development",
-      
+      backend: "http://localhost:9001",
       develop: {
         open: process.env.OPEN_BROWSER !== "false",
       },
