@@ -50,6 +50,22 @@ class StoreService extends MedusaStoreService {
     return store;
 }
 
+  // Method to update the store's domain
+  async updateStoreDomain(storeId: string, domain: string): Promise<Store> {
+    const store = await this.storeRepository_.findOne({
+      where: { id: storeId },
+    });
+
+    if (!store) {
+      throw new Error('Store not found');
+    }
+
+    store.domain = domain;
+    await this.storeRepository_.save(store);
+
+    return store;
+  }
+
 }
 
 export default StoreService

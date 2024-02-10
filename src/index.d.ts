@@ -4,6 +4,7 @@ export declare module '@medusajs/medusa/dist/models/store' {
     products?: Product[];
     orders?: Order[];
     roles: Role[];
+    domain: string;
   }
 }
 
