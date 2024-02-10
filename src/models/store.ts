@@ -22,6 +22,6 @@ export class Store extends MedusaStore {
   roles: Role[];
   
   @Column({ type: 'varchar', unique: true, nullable: true })
-  domain?: string;
+  domain: string;
 
 }
