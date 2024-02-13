@@ -21,7 +21,7 @@ try {
 } catch (e) {}
 
 // CORS when consuming Medusa from admin
-const ADMIN_CORS = "https://octopus-dashboard.vercel.app";
+const ADMIN_CORS = process.env.ADMIN_CORS || "https://octopus-dashboard.vercel.app";
 
 // CORS to avoid issues when consuming Medusa from a client
 const STORE_CORS = process.env.STORE_CORS || "http://localhost:8000";
