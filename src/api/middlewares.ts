@@ -11,15 +11,18 @@ import { User } from 'src/models/user';
 
 const registerLoggedInUser = async (req: MedusaRequest, res: MedusaResponse, next: MedusaNextFunction) => {
   let loggedInUser: User | null = null;
+
   if (req.user && req.user.userId) {
     const userService = req.scope.resolve('userService') as UserService;
     loggedInUser = await userService.retrieve(req.user.userId);
   }
+
   req.scope.register({
     loggedInUser: {
       resolve: () => loggedInUser,
     },
   });
+
   next();
 };
 
@@ -70,29 +73,7 @@ export const permissions = async (
   res.sendStatus(401);
 };
 
-const corsOptionsSubdomain = {
-  origin: function (origin, callback) {
-    if (!origin) {
-      callback(null, true);
-      return;
-    }
 
-    // Use STORE_CORS from environment variables to define allowed origins
-    const allowedDomain = process.env.STORE_CORS; // e.g., "https://*.yourdomain.com"
-    const regex = new RegExp(`^https?:\/\/([a-z0-9]+)\.${allowedDomain.replace('.', '\\.')}$`);
-
-    if (regex.test(origin)) {
-      // Allow requests from subdomains
-      callback(null, true);
-    } else {
-      // Disallow other origins
-      callback(new Error('Not allowed by CORS'), false);
-    }
-  },
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
-  optionsSuccessStatus: 204
-};
 
 const corsOptions = {
   origin: process.env.ADMIN_CORS,
@@ -105,15 +86,11 @@ export const config: MiddlewaresConfig = {
   routes: [
     {
       matcher: /\/admin\/[^(auth)].*/,
-      middlewares: [cors(corsOptions) , authenticate(), registerLoggedInUser],
+      middlewares: [cors(corsOptions), authenticate(), registerLoggedInUser],
     },
     {
       matcher: "/admin/*",
       middlewares: [permissions],
-    },
-    {
-      matcher: "/store/*",
-      middlewares: cors(corsOptionsSubdomain),
     },
   ],
 };
