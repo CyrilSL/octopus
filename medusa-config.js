@@ -16,18 +16,18 @@ switch (process.env.NODE_ENV) {
     ENV_FILE_NAME = ".env";
     break;
 }
+
 try {
   dotenv.config({ path: process.cwd() + "/" + ENV_FILE_NAME });
 } catch (e) {}
 
 // CORS when consuming Medusa from admin
-const ADMIN_CORS = process.env.ADMIN_CORS || "https://octopus-dashboard.vercel.app";
+const ADMIN_CORS = process.env.ADMIN_CORS || "http://localhost:7000,http://localhost:7001";
 
 // CORS to avoid issues when consuming Medusa from a client
 const STORE_CORS = process.env.STORE_CORS || "http://localhost:8000";
 
-const DATABASE_URL =
-  process.env.DATABASE_URL || "postgres://localhost/medusa-starter-default";
+const DATABASE_URL = process.env.DATABASE_URL || "postgres://localhost/medusa-starter-default";
 
 const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
 
@@ -48,7 +48,7 @@ const plugins = [
       // you may need to add the NODE_ENV variable
       // manually
       serve: process.env.NODE_ENV === "development",
-      backend: "https://octopus-production-47ec.up.railway.app",
+      // backend: "https://octopus-production-47ec.up.railway.app",
       develop: {
         open: process.env.OPEN_BROWSER !== "false",
       },
@@ -57,19 +57,18 @@ const plugins = [
 ];
 
 const modules = {
-  // eventBus: {
-  //   resolve: "@medusajs/event-bus-redis",
-  //   options: {
-  //     redisUrl: REDIS_URL
-  //   }
-  // },
-  // cacheService: {
-  //   resolve: "@medusajs/cache-redis",
-  //   options: {
-  //     redisUrl: REDIS_URL,
-  //     ttl: 30,
-  //   }
-  // },
+  /*eventBus: {
+    resolve: "@medusajs/event-bus-redis",
+    options: {
+      redisUrl: REDIS_URL
+    }
+  },
+  cacheService: {
+    resolve: "@medusajs/cache-redis",
+    options: {
+      redisUrl: REDIS_URL
+    }
+  },*/
 };
 
 /** @type {import('@medusajs/medusa').ConfigModule["projectConfig"]} */

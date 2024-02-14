@@ -76,7 +76,7 @@ export const permissions = async (
 
 
 const corsOptions = {
-  origin: 'https://octopus-dashboard.vercel.app',
+  origin: process.env.ADMIN_CORS,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204,

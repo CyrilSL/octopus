@@ -3,10 +3,12 @@ import {
   FindConfig,
   StoreService as MedusaStoreService, Store, User,
 } from "@medusajs/medusa"
+import StoreRepository from 'src/repositories/store';
 
 class StoreService extends MedusaStoreService {
   static LIFE_TIME = Lifetime.SCOPED
   protected readonly loggedInUser_: User | null
+  protected storeRepository_: typeof StoreRepository;
 
   constructor(container, options) {
     // @ts-expect-error prefer-rest-params
@@ -50,6 +52,7 @@ class StoreService extends MedusaStoreService {
     return store;
 }
 
+// In StoreService.ts
   // Method to update the store's domain
   async updateStoreDomain(storeId: string, domain: string): Promise<Store> {
     const store = await this.storeRepository_.findOne({
@@ -65,6 +68,9 @@ class StoreService extends MedusaStoreService {
 
     return store;
   }
+
+
+
 
 }
 

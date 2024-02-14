@@ -11,16 +11,11 @@ const StoreDetails = () => {
         
         store,
         isLoading
-      } = useAdminStore()
+      } = useAdminStore();
+      console.log(store);
   return (
     <Container>
-      
       <div>
-      {isLoading && <span>Loading...</span>}
-      {store && <span>{store.name}</span>}
-      <br></br>
-      <span>{store.id}</span>
-
       <h2>Admin Store Data</h2>
        {/* Check and display the domain if available */}
        {store && store.domain ? (
@@ -38,7 +33,6 @@ const StoreDetails = () => {
       <pre>{JSON.stringify(store, null, 2)}</pre>
       
     </div>
-
     </Container>
   );
 };
