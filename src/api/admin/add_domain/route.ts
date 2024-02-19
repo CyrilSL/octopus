@@ -3,7 +3,7 @@ import type { MedusaRequest, MedusaResponse } from "@medusajs/medusa";
 // Adjust the import path as necessary for your project structure
 import DomainService from "src/services/domain";
 
-export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
+export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     // Resolve the StoreService from the request scope
     const domainService = req.scope.resolve("domainService") as DomainService;

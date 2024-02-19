@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useAdminGetSession, useAdminCustomQuery } from "medusa-react";
-import { Heading, Container, Table, Label, Button, FocusModal } from "@medusajs/ui";
+import { useAdminGetSession, useAdminCustomQuery, useAdminCustomPost } from "medusa-react";
+import { Heading, Container, Table, Label, Button, Drawer, Input } from "@medusajs/ui";
 import { RouteConfig } from '@medusajs/admin';
 
 
@@ -12,6 +12,16 @@ const AllStores = () => {
   );
   const [selectedStoreId, setSelectedStoreId] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const [newDomain, setNewDomain] = useState(""); // State to hold the new domain
+
+  // Hook for adding/updating domain
+  const updateDomain = useAdminCustomPost<{storeId: string, domain: string}, {message: string}>(
+    "/admin/add_domain",
+    ["updateDomain"], // This is the queryKey
+    // You can provide relatedDomains and options as needed, here's an example with default options
+  );
+
 
   const {
     data: productsData,
@@ -46,6 +56,25 @@ const AllStores = () => {
       </Container>
     );
   }
+
+
+  const handleUpdateDomain = () => {
+    if (selectedStoreId && newDomain) {
+      updateDomain.mutate({
+        storeId: selectedStoreId,
+        domain: newDomain,
+      }, {
+        onSuccess: () => {
+          alert("Domain updated successfully!");
+          setModalIsOpen(false); // Close the modal on success
+        },
+        onError: (error) => {
+          console.error("Failed to update domain:", error);
+          alert("Failed to update domain.");
+        },
+      });
+    }
+  };
 
   return (
     <Container>
@@ -83,39 +112,46 @@ const AllStores = () => {
       </Table>
       
       {selectedStore && (
-   <FocusModal>
-   <FocusModal.Trigger asChild>
-     <Button className="mt-4">Close Details</Button>
-   </FocusModal.Trigger>
-   <FocusModal.Content className="bg-white rounded-lg p-6 shadow-lg max-w-2xl mx-auto">
-     <FocusModal.Header className="border-b pb-4">
-       <Heading className="text-2xl font-bold text-gray-900">
-         {selectedStore.name}
-       </Heading>
-     </FocusModal.Header>
-     <FocusModal.Body className="pt-6">
-       <div className="space-y-4">
-         <p className="text-sm text-gray-500">Store ID: <span className="text-gray-700">{selectedStore.id}</span></p>
-         <p className="text-sm text-gray-500">Default Currency Code: <span className="text-gray-700">{selectedStore.default_currency_code}</span></p>
-         <p className="text-sm text-gray-500">Domain: <span className="text-gray-700">{selectedStore.domain || 'N/A'}</span></p>
-         <p className="text-sm text-gray-500">Created At: <span className="text-gray-700">{selectedStore.created_at}</span></p>
-         <p className="text-sm text-gray-500">Updated At: <span className="text-gray-700">{selectedStore.updated_at}</span></p>
-         <div className="pt-4">
-           <Heading className="text-lg font-semibold text-gray-900">Products</Heading>
-           {isLoadingProducts ? (
-             <p className="text-gray-500">Loading Products...</p>
-           ) : (
-             <ul className="list-disc pl-5 space-y-2">
-               {productsData?.products.map(product => (
-                 <li key={product.id} className="text-sm text-gray-700">{product.title} - {product.description}</li>
-               ))}
-             </ul>
-           )}
-         </div>
-       </div>
-     </FocusModal.Body>
-   </FocusModal.Content>
- </FocusModal>
+   <Drawer>
+   <Drawer.Trigger asChild>
+     <Button className="mt-4">View Store Info</Button>
+   </Drawer.Trigger>
+   <Drawer.Content className="bg-white rounded-lg p-4 shadow-lg max-w-md mx-auto space-y-4">
+            <Drawer.Header className="flex justify-between items-center">
+              <Drawer.Title className="text-gray-900">
+                {selectedStore.name}
+              </Drawer.Title>
+              <div className="text-xs text-gray-400">
+                <p>Created: {selectedStore.created_at}</p>
+                <p>Updated: {selectedStore.updated_at}</p>
+              </div>
+            </Drawer.Header>
+            <Drawer.Body>
+              <div className="space-y-2">
+                <p className="text-sm text-gray-500">Store ID: <span className="font-medium text-gray-700">{selectedStore.id}</span></p>
+                <p className="text-sm text-gray-500">Currency: <span className="font-medium text-gray-700">{selectedStore.default_currency_code}</span></p>
+                <p className="text-sm text-gray-500">Domain: <span className="font-medium text-gray-700">{selectedStore.domain || 'N/A'}</span></p>
+                <div>
+                  <Heading className="text-lg font-semibold text-gray-900 mb-2">Products</Heading>
+                  {isLoadingProducts ? (
+                    <p className="text-gray-500">Loading Products...</p>
+                  ) : (
+                    <ul className="list-disc pl-5 space-y-1">
+                      {productsData?.products.map(product => (
+                        <li key={product.id} className="text-sm text-gray-700">{product.title} - {product.description}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <div className="pt-2">
+                  <Label className="block mb-2">Update Domain</Label>
+                  <Input value={newDomain} onChange={(e) => setNewDomain(e.target.value)} placeholder="Enter new domain" className="mb-2" />
+                  <Button onClick={handleUpdateDomain}>Update Domain</Button>
+                </div>
+              </div>
+            </Drawer.Body>
+          </Drawer.Content>
+ </Drawer>
  
       )}
     </Container>
