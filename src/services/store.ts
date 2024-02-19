@@ -4,53 +4,58 @@ import {
   StoreService as MedusaStoreService, Store, User,
 } from "@medusajs/medusa"
 import StoreRepository from 'src/repositories/store';
+import ProductService from "./product";
+
+type InjectedDependencies = {
+  productService: ProductService
+}
 
 class StoreService extends MedusaStoreService {
   static LIFE_TIME = Lifetime.SCOPED
-  protected readonly loggedInUser_: User | null
+   protected readonly loggedInUser_: User | null
   protected storeRepository_: typeof StoreRepository;
+  protected readonly productService_: ProductService
 
   constructor(container, options) {
     // @ts-expect-error prefer-rest-params
     super(...arguments)
-
     try {
-      this.loggedInUser_ = container.loggedInUser
+    //  this.loggedInUser_ = container.loggedInUser
+      this.productService_=container.productService
     } catch (e) {
       // avoid errors when backend first runs
+      console.log("storeService Error : ",e)
     }
   }
 
-  async retrieve(config?: FindConfig<Store>): Promise<Store> {
-    if (!this.loggedInUser_) {
-      return super.retrieve(config);
-    }
+  // async retrieve(config?: FindConfig<Store>): Promise<Store> {
+  //   if (!this.loggedInUser_) {
+  //     return super.retrieve(config);
+  //   }
+  //   return this.retrieveForLoggedInUser(config);
+  // }
 
-    return this.retrieveForLoggedInUser(config);
-  }
+//   async retrieveForLoggedInUser(config?: FindConfig<Store>) {
+//     const storeRepo = this.manager_.withRepository(this.storeRepository_);
+//     // Ensure that the config object and its relations property are defined
+//     const effectiveConfig = {
+//         ...config,
+//         relations: config && config.relations ? [...config.relations, 'members'] : ['members']
+//     };
 
-  async retrieveForLoggedInUser(config?: FindConfig<Store>) {
-    const storeRepo = this.manager_.withRepository(this.storeRepository_);
+//     const store = await storeRepo.findOne({
+//         ...effectiveConfig,
+//         where: {
+//             id: this.loggedInUser_.store_id
+//         },
+//     });
 
-    // Ensure that the config object and its relations property are defined
-    const effectiveConfig = {
-        ...config,
-        relations: config && config.relations ? [...config.relations, 'members'] : ['members']
-    };
+//     if (!store) {
+//         throw new Error('Unable to find the user store');
+//     }
 
-    const store = await storeRepo.findOne({
-        ...effectiveConfig,
-        where: {
-            id: this.loggedInUser_.store_id
-        },
-    });
-
-    if (!store) {
-        throw new Error('Unable to find the user store');
-    }
-
-    return store;
-}
+//     return store;
+// }
 
 // In StoreService.ts
   // Method to update the store's domain
@@ -58,20 +63,30 @@ class StoreService extends MedusaStoreService {
     const store = await this.storeRepository_.findOne({
       where: { id: storeId },
     });
-
     if (!store) {
       throw new Error('Store not found');
     }
-
     store.domain = domain;
     await this.storeRepository_.save(store);
-
     return store;
   }
 
+  async fetchProductsByDomain(domain: string): Promise<any[]> {
+    const store = await this.storeRepository_.findOne({ where: { domain } });
+    if (!store) {
+      throw new Error('Store not found');
+    }
+    console.log("prod_01HNFXM9YZM8PHCCJEJV4WN16E");
+    return this.productService_.fetchProducts(store.id);
+  }
 
-
+  async listAllStores(): Promise<Store[]> {
+    // Use the storeRepository to access all stores
+    const stores = await this.storeRepository_.find();
+    return stores;
+  }
 
 }
+
 
 export default StoreService

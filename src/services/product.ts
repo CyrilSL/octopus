@@ -7,7 +7,7 @@ import {
 import { Lifetime } from 'awilix';
 import { Product } from 'src/models/product';
 import ProductRepository from 'src/repositories/products';
-import StoreRepository from 'src/repositories/store';
+// import StoreRepository from 'src/repositories/store';
 
 type ProductSelector = MedusaProductSelector;
 
@@ -17,13 +17,13 @@ class ProductService extends MedusaProductService {
   static LIFE_TIME = Lifetime.SCOPED;
   protected readonly loggedInUser_: User | null;
   protected productRepository_: typeof ProductRepository;
-  protected storeRepository_: typeof StoreRepository;
+  // protected storeRepository_: typeof StoreRepository;
 
   constructor(container, options) {
     // @ts-expect-error prefer-rest-params
     super(...arguments);
     this.productRepository_ = container.productRepository;
-    this.storeRepository_=container.storeRepository;
+    // this.storeRepository_=container.storeRepository;
 
     try {
       this.loggedInUser_ = container.loggedInUser;
@@ -101,7 +101,6 @@ async addProducts(storeId: string, productIds: string[]): Promise<void> {
       .getMany();
   }
 
-
   //removes multiple product from mini store- recieves array of products and store id
   async removeProducts(storeId: string, productIds: string[]): Promise<void> {
     const entityManager = this.manager_;
@@ -117,9 +116,11 @@ async addProducts(storeId: string, productIds: string[]): Promise<void> {
     });
   }
   
+  async sample() {
+    // Assuming 'product' is the alias for the products table
+    // and 'store_products' is a join table between stores and products
+    return "Sample";
+  }
   
-  
-  
-   
   }
 export default ProductService;

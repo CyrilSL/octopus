@@ -27,7 +27,7 @@ const StoreDetails = () => {
 
 export const config: RouteConfig = {
   link: {
-    label: "All Stores",
+    label: "Store Details",
     // icon: CustomIcon,
   },
 };
