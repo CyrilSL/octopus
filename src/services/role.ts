@@ -23,7 +23,6 @@ class RoleService extends TransactionBaseService {
 
   constructor(container: InjectedDependencies) {
     super(container)
-
     this.roleRpository_ = container.roleRepository
     this.permissionService_ = container.permissionService
     this.userService_ = container.userService
@@ -58,9 +57,7 @@ class RoleService extends TransactionBaseService {
         this.roleRpository_
       )
       const role = roleRepo.create(data)
-
       role.permissions = []
-
       for (const permissionData of permissionsData) {
         role.permissions.push(
           await this.permissionService_.create(
@@ -69,7 +66,6 @@ class RoleService extends TransactionBaseService {
         )
       }
       const result = await roleRepo.save(role)
-
       return await this.retrieve(result.id)
     })
   }
@@ -83,7 +79,6 @@ class RoleService extends TransactionBaseService {
       await this.userService_.update(user_id, {
         role_id,
       })
-
       return await this.retrieve(role_id)
     })
   }

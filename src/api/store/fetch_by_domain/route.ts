@@ -1,5 +1,6 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/medusa";
 import StoreService from "src/services/store"; // Adjust the import path as necessary
+import DomainService from "src/services/domain";
 
 export const GET = async (
   req: MedusaRequest,
@@ -11,8 +12,9 @@ export const GET = async (
       return res.status(400).json({ message: "Domain is required" });
     }
 
-    const storeService = req.scope.resolve("storeService") as StoreService;
-    const products = await storeService.fetchProductsByDomain(domain as string);
+// const storeService = req.scope.resolve("storeService") as StoreService;
+    const domainService = req.scope.resolve("domainService") as DomainService;
+    const products = await domainService.fetchProductsByDomain(domain as string);
 
     res.json({ products });
   } catch (error) {

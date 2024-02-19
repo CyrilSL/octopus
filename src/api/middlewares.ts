@@ -90,7 +90,7 @@ export const config: MiddlewaresConfig = {
     },
     {
       matcher: "/admin/*",
-      middlewares: [permissions],
+      middlewares: [permissions, registerLoggedInUser],
     },
   ],
 };
