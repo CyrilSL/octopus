@@ -19,7 +19,7 @@ class DomainService extends MedusaStoreService {
             this.productService_ = container.productService
         } catch (e) {
             // avoid errors when backend first runs
-            console.log("storeService Error : ", e)
+            // console.log("storeService Error : ", e)
         }
     }
 
@@ -45,6 +45,16 @@ class DomainService extends MedusaStoreService {
         console.log("prod_01HNFXM9YZM8PHCCJEJV4WN16E");
         return this.productService_.fetchProducts(store.id);
     }
+
+    async findByDomain(domainName: string): Promise<Store | undefined> {
+        const store = await this.storeRepository_.findOne({
+          where: {
+            domain: domainName,
+          },
+        });
+        
+        return store;
+      }
 }
 
 

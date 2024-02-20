@@ -20,7 +20,7 @@ class StoreService extends MedusaStoreService {
       this.loggedInUser_ = container.loggedInUser;
     } catch (e) {
       // avoid errors when backend first runs
-      console.log("storeService Error : ",e)
+      // console.log("storeService Error : ",e)
     }
   }
 
@@ -59,6 +59,16 @@ class StoreService extends MedusaStoreService {
     // Use the storeRepository to access all stores
     const stores = await this.storeRepository_.find();
     return stores;
+  }
+
+  async findByDomain(domainName: string): Promise<Store | undefined> {
+    const store = await this.storeRepository_.findOne({
+      where: {
+        domain: domainName,
+      },
+    });
+    
+    return store;
   }
 
 }
