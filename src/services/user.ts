@@ -27,7 +27,7 @@ class UserService extends MedusaUserService {
       console.log("Logged In User userService : ",this.loggedInUser_.email)
     } catch (e) {
       // avoid errors when backend first runs
-      console.log("userService error : ",e)
+     // console.log("userService error : ",e)
     }
   }
 
