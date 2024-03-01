@@ -106,7 +106,7 @@ const RemoveProducts = () => {
 
 export const config: RouteConfig = {
   link: {
-    label: "Remove Products",
+    label: "My Products",
     // icon: CustomIcon,
   },
 };
