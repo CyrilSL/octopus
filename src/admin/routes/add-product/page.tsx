@@ -7,9 +7,7 @@ const AddProducts = () => {
   const { products, isLoading: isProductsLoading } = useAdminProducts({ fields: "title,handle" });
   const { user, isLoading: isUserLoading } = useAdminGetSession();
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [miniStoreProducts, setMiniStoreProducts] = useState([]);
   const [availableProducts, setAvailableProducts] = useState([]);
-  const [refresh, setRefresh] = useState(false); // State variable to trigger re-render
   const [refreshCounter, setRefreshCounter] = useState(0);
 
   const triggerRefresh = () => setRefreshCounter(c => c + 1);

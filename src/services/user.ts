@@ -27,7 +27,7 @@ class UserService extends MedusaUserService {
       console.log("Logged In User userService : ",this.loggedInUser_.email)
     } catch (e) {
       // avoid errors when backend first runs
-      console.log("userService error : ",e)
+    //  console.log("userService error : ",e)
     }
   }
 
@@ -47,6 +47,30 @@ class UserService extends MedusaUserService {
   }): Promise<User> {
     return super.update(userId, update)
   }
+
+  // async delete(userId: string): Promise<void> {
+  //   const userRepository = this.manager_.withRepository(this.storeRepository_)
+  //   const user = await userRepository.findOne({ where: { id: "usr_01HQZ3EY27G4RH8N9KQ6RDDFXM" } });
+  //   console.log("User ID.. : ",userId)
+  //   if (user) {
+  //     console.log("Deleting user : ",user)
+  //     await userRepository.remove(user);
+  //   }
+  // }
+
+  // async deleteMultiple(userIds: string[]): Promise<void> {
+  //   const userRepository = this.manager_.withRepository(this.storeRepository_)
+
+  //   // Assuming a hard delete, adjust based on your needs (e.g., soft delete might set a flag instead)
+  //   for (const userId of userIds) {
+  //     const user = await userRepository.findOne({ where: { id: userId } });
+  //     if (user) {
+  //       await userRepository.remove(user);
+  //     }
+  //   }
+  // }
 }
+
+
 
 export default UserService
