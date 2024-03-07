@@ -1,25 +1,63 @@
-import React, { useState, useEffect } from 'react';
-import { useAdminGetSession, useAdminCustomQuery, useAdminCustomDelete } from "medusa-react";
-import { Checkbox, Label, Table, Heading, Button, Container } from "@medusajs/ui";
+import { Container, Button, Input } from "@medusajs/ui";
 import { RouteConfig } from "@medusajs/admin";
-import { useAdminStore } from "medusa-react"
-import { Input } from "@medusajs/ui"
+import { useAdminCreateUser, useAdminUsers } from "medusa-react";
+import { useState } from "react";
 
+const Users = () => {
+  const { users, isLoading } = useAdminUsers();
+  const createUser = useAdminCreateUser();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-const StoreDetails = () => {
-    const { 
-        
-        store,
-        isLoading
-      } = useAdminStore();
-      console.log(store);
+  const handleCreateUser = () => {
+    createUser.mutate({
+      email,
+      password,
+    }, {
+      onSuccess: ({ user }) => {
+        console.log(user.id);
+        // Optionally, clear the form or show a success message
+        setEmail("");
+        setPassword("");
+        alert("User created successfully!");
+      },
+      onError: (error) => {
+        // Handle error case
+        console.error("Error creating user:", error);
+        alert("Failed to create user.");
+      }
+    });
+  };
+
   return (
     <Container>
-      <div>
-      <h2>Admin Store Data</h2>
-      {/* Display your store data here */}
-      <pre>{JSON.stringify(store, null, 2)}</pre>
-      
+            <div>
+        <h3>Create User</h3>
+        <Input 
+          
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)} 
+          placeholder="Enter user's email"
+        />
+        <Input 
+          
+          type="password"
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)} 
+          placeholder="Enter user's password"
+        />
+        <Button onClick={handleCreateUser}>Create User</Button>
+      </div>
+       <div>
+      {isLoading && <span>Loading...</span>}
+      {users && !users.length && <span>No Users</span>}
+      {users && users.length > 0 && (
+        <ul>
+          {users.map((user) => (
+            <li key={user.id}>{user.email}</li>
+          ))}
+        </ul>
+      )}
     </div>
     </Container>
   );
@@ -27,9 +65,9 @@ const StoreDetails = () => {
 
 export const config: RouteConfig = {
   link: {
-    label: "Store Details",
+    label: "User Details",
     // icon: CustomIcon,
   },
 };
 
-export default StoreDetails;
+export default Users;
