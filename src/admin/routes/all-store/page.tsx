@@ -116,12 +116,12 @@ const AllStores = () => {
    <Drawer.Trigger asChild>
      <Button className="mt-4">View Store Info</Button>
    </Drawer.Trigger>
-   <Drawer.Content >
-            <Drawer.Header >
-              <Drawer.Title>
+   <Drawer.Content className="bg-white rounded-lg p-4 shadow-lg max-w-md mx-auto space-y-4">
+            <Drawer.Header className="flex justify-between items-center">
+              <Drawer.Title className="text-gray-900">
                 {selectedStore.name}
               </Drawer.Title>
-              <div>
+              <div className="text-xs text-gray-400">
                 <p>Created: {selectedStore.created_at}</p>
                 <p>Updated: {selectedStore.updated_at}</p>
               </div>
@@ -132,19 +132,19 @@ const AllStores = () => {
                 <p className="text-sm text-gray-500">Currency: <span className="font-medium text-gray-700">{selectedStore.default_currency_code}</span></p>
                 <p className="text-sm text-gray-500">Domain: <span className="font-medium text-gray-700">{selectedStore.domain || 'N/A'}</span></p>
                 <div>
-                  <Heading >Products</Heading>
+                  <Heading className="text-lg font-semibold text-gray-900 mb-2">Products</Heading>
                   {isLoadingProducts ? (
                     <p className="text-gray-500">Loading Products...</p>
                   ) : (
-                    <ul >
+                    <ul className="list-disc pl-5 space-y-1">
                       {productsData?.products.map(product => (
-                        <li key={product.id} >{product.title} - {product.description}</li>
+                        <li key={product.id} className="text-sm text-gray-700">{product.title} - {product.description}</li>
                       ))}
                     </ul>
                   )}
                 </div>
                 <div className="pt-2">
-                  <Label >Update Domain</Label>
+                  <Label className="block mb-2">Update Domain</Label>
                   <Input value={newDomain} onChange={(e) => setNewDomain(e.target.value)} placeholder="Enter new domain" className="mb-2" />
                   <Button onClick={handleUpdateDomain}>Update Domain</Button>
                 </div>

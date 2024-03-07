@@ -54,6 +54,20 @@ class ProductService extends MedusaProductService {
     return await super.create(productObject);
   }
 
+//Receives Store ID and Product Id and saves in store_products // Works with only one product
+  // async addProducts(storeId: string, productId: string): Promise<void> {
+  //   const entityManager = this.manager_;  // Assuming this.manager_ is an instance of EntityManager
+  //   await entityManager.transaction(async transactionalEntityManager => {
+  //     await transactionalEntityManager
+  //       .createQueryBuilder()
+  //       .insert()
+  //       .into('store_products')
+  //       .values({ store_id: storeId, product_id: productId })
+  //       .execute();
+  //       console.log("SQL Query: 1");
+  //   });
+  // }
+
   // Modifies the addProducts function to accept an array of productIds
   //Adds Multiple products, recieves as array and adds Product to mini Store
 async addProducts(storeId: string, productIds: string[]): Promise<void> {
