@@ -19,7 +19,6 @@ const StoreDetails = () => {
       <h2>Admin Store Data</h2>
       {/* Display your store data here */}
       <pre>{JSON.stringify(store, null, 2)}</pre>
-      
     </div>
     </Container>
   );
