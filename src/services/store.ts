@@ -56,7 +56,6 @@ class StoreService extends MedusaStoreService {
 // In StoreService.ts
   // Method to update the store's domain
   async listAllStores(): Promise<Store[]> {
-    // Use the storeRepository to access all stores
     const stores = await this.storeRepository_.find();
     return stores;
   }
