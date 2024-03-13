@@ -34,7 +34,6 @@ const Users = () => {
             <div>
         <h3>Create User</h3>
         <Input 
-          
           value={email} 
           onChange={(e) => setEmail(e.target.value)} 
           placeholder="Enter user's email"
