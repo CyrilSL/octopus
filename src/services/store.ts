@@ -61,15 +61,15 @@ class StoreService extends MedusaStoreService {
     return stores;
   }
 
-  async findByDomain(domainName: string): Promise<Store | undefined> {
-    const store = await this.storeRepository_.findOne({
-      where: {
-        domain: domainName,
-      },
-    });
+  // async findByDomain(domainName: string): Promise<Store | undefined> {
+  //   const store = await this.storeRepository_.findOne({
+  //     where: {
+  //       domain: domainName,
+  //     },
+  //   });
     
-    return store;
-  }
+  //   return store;
+  // }
 
 }
 
