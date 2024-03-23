@@ -2,7 +2,7 @@
   "name": "octopus",
   "version": "0.0.8",
   "description": "A starter .",
-  "author": "haloweave.com",
+  "author": "Haloweave (https://haloweave.com)",
   "license": "MIT",
   "keywords": [
     "sqlite",
@@ -16,7 +16,7 @@
     "clean": "cross-env ./node_modules/.bin/rimraf dist",
     "build": "cross-env npm run clean && npm run build:server",
     "build:server": "cross-env npm run clean && tsc -p tsconfig.server.json",
-   
+    "build:admin": "cross-env medusa-admin build",
     "watch": "cross-env tsc --watch",
     "test": "cross-env jest",
     "seed": "cross-env medusa seed -f ./data/seed.json",
