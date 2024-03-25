@@ -22,3 +22,5 @@ localhost:9000/admin/roles/[role-ID]/user/[user-ID]
 
 
 store_products join table is create that has primary key of products and store
+
+To-do: Store specific orders
