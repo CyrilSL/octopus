@@ -48,7 +48,6 @@ const plugins = [
       // you may need to add the NODE_ENV variable
       // manually
       serve: process.env.NODE_ENV === "development",
-      // backend: "https://octopus-production-47ec.up.railway.app",
       develop: {
         open: process.env.OPEN_BROWSER !== "false",
       },
