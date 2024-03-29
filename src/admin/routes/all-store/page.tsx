@@ -22,7 +22,6 @@ const AllStores = () => {
     // You can provide relatedDomains and options as needed, here's an example with default options
   );
 
-
   const {
     data: productsData,
     isLoading: isLoadingProducts,
@@ -35,6 +34,9 @@ const AllStores = () => {
   );
 
   const allStores = allStoresData?.store || [];
+
+  console.log("All Stores : ",allStores)
+  console.log("All Store from API : ",allStoresData)
 
   const handleStoreSelect = (store) => {
     setSelectedStoreId(store.id);

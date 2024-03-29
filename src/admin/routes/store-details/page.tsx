@@ -8,7 +8,6 @@ import { Input } from "@medusajs/ui"
 
 const StoreDetails = () => {
     const { 
-        
         store,
         isLoading
       } = useAdminStore();

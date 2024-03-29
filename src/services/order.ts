@@ -16,7 +16,7 @@ class OrderService extends MedusaOrderService {
     this.storeRepository_ = container.storeRepository;
   }
 
-  async link(orderId: string, storeId: string): Promise<void> {
+  async bindOrderToStore(orderId: string, storeId: string): Promise<void> {
     const order = await this.orderRepository_.findOne({
       where: { id: orderId },
       relations: ["store"],
@@ -35,8 +35,10 @@ class OrderService extends MedusaOrderService {
     }
 
     order.store = store;
+    console.log("Binded Order ID : "+orderId+" Store ID : ", storeId)
     await this.orderRepository_.save(order);
   }
+
 
   async getStoreOrders(storeId: string): Promise<Order[]> {
     const storeRepo = this.manager_.withRepository(this.storeRepository_);
@@ -50,6 +52,11 @@ class OrderService extends MedusaOrderService {
       relations: ["store"],
     });
     return orders;
+  }
+
+  async consoleLogging(oneVar: any): Promise<void>{
+    console.log("From subscriber yoooo : ",oneVar)
+   
   }
 }
 

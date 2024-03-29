@@ -42,7 +42,6 @@ class DomainService extends MedusaStoreService {
         if (!store) {
             throw new Error('Store not found');
         }
-        console.log("prod_01HNFXM9YZM8PHCCJEJV4WN16E");
         return this.productService_.fetchProducts(store.id);
     }
 
