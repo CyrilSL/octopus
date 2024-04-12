@@ -20,4 +20,7 @@ export class Store extends MedusaStore {
 
   @Column({ type: 'varchar', unique: true, nullable: true })
   domain: string;
+
+  // @Column({ type: 'varchar', nullable: true })
+  // banner_image: string;
 }
