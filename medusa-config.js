@@ -61,12 +61,12 @@ const plugins = [
       bucketName: process.env.BUCKET_NAME,
     },
   },
-  {
-    resolve: `@rsc-labs/medusa-documents`,
-    options: {
-      enableUI: true
-    }
-  }
+  // {
+  //   resolve: `@rsc-labs/medusa-documents`,
+  //   options: {
+  //     enableUI: true
+  //   }
+  // }
 ];
 
 const modules = {
